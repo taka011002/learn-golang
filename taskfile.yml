@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  setup:
+    cmds:
+      - go install github.com/99designs/gqlgen@v0.17.49
+      - go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.26.0
