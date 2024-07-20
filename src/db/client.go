@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 func NewDbClient(ctx context.Context) (*pgx.Conn, error) {
@@ -12,7 +13,7 @@ func NewDbClient(ctx context.Context) (*pgx.Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close(ctx)
+	//defer conn.Close(ctx)
 
 	return conn, nil
 }

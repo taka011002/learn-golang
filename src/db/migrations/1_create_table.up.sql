@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS repositories
 (
     id         UUID PRIMARY KEY NOT NULL,
-    owner      TEXT             NOT NULL,
+    owner      UUID             NOT NULL,
     name       TEXT             NOT NULL,
     created_at TIMESTAMP        NOT NULL,
     FOREIGN KEY (owner) REFERENCES users (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS issues
 (
@@ -21,19 +21,19 @@ CREATE TABLE IF NOT EXISTS issues
     title      TEXT             NOT NULL,
     closed     INTEGER          NOT NULL DEFAULT 0,
     number     INTEGER          NOT NULL,
-    repository TEXT             NOT NULL,
+    repository UUID             NOT NULL,
     CHECK (closed IN (0, 1)),
     FOREIGN KEY (repository) REFERENCES repositories (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS projects
 (
     id    UUID PRIMARY KEY NOT NULL,
     title TEXT             NOT NULL,
     url   TEXT             NOT NULL,
-    owner TEXT             NOT NULL,
+    owner UUID             NOT NULL,
     FOREIGN KEY (owner) REFERENCES users (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS pullrequests
 (
@@ -43,19 +43,19 @@ CREATE TABLE IF NOT EXISTS pullrequests
     head_ref_name TEXT             NOT NULL,
     url           TEXT             NOT NULL,
     number        INTEGER          NOT NULL,
-    repository    TEXT             NOT NULL,
+    repository    UUID             NOT NULL,
     CHECK (closed IN (0, 1)),
     FOREIGN KEY (repository) REFERENCES repositories (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS projectcards
 (
     id          UUID PRIMARY KEY NOT NULL,
-    project     TEXT             NOT NULL,
-    issue       TEXT,
-    pullrequest TEXT,
+    project     UUID             NOT NULL,
+    issue       UUID,
+    pullrequest UUID,
     FOREIGN KEY (project) REFERENCES projects (id),
     FOREIGN KEY (issue) REFERENCES issues (id),
     FOREIGN KEY (pullrequest) REFERENCES pullrequests (id),
     CHECK (issue IS NOT NULL OR pullrequest IS NOT NULL)
-);
+    );

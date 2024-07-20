@@ -183,8 +183,13 @@ type Query {
 #    ): Node
 }
 
-#type Mutation {
+type Mutation {
+    createUser(
+        name: String!
+    ): User
+
+
 #    addProjectV2ItemById(
 #        input: AddProjectV2ItemByIdInput!
 #    ): AddProjectV2ItemByIdPayload
-#}
+}

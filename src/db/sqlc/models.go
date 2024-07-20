@@ -14,21 +14,21 @@ type Issue struct {
 	Title      string
 	Closed     int32
 	Number     int32
-	Repository string
+	Repository pgtype.UUID
 }
 
 type Project struct {
 	ID    pgtype.UUID
 	Title string
 	Url   string
-	Owner string
+	Owner pgtype.UUID
 }
 
 type Projectcard struct {
 	ID          pgtype.UUID
-	Project     string
-	Issue       pgtype.Text
-	Pullrequest pgtype.Text
+	Project     pgtype.UUID
+	Issue       pgtype.UUID
+	Pullrequest pgtype.UUID
 }
 
 type Pullrequest struct {
@@ -38,12 +38,12 @@ type Pullrequest struct {
 	HeadRefName string
 	Url         string
 	Number      int32
-	Repository  string
+	Repository  pgtype.UUID
 }
 
 type Repository struct {
 	ID        pgtype.UUID
-	Owner     string
+	Owner     pgtype.UUID
 	Name      string
 	CreatedAt pgtype.Timestamp
 }
