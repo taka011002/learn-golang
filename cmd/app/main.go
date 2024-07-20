@@ -26,7 +26,7 @@ func run() int {
 	slog.Info("Server Start", slog.String("port", ":8080"))
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
-		return exitErreturn exitErr
+		return exitErr
 	}
 
 	return exitOK
