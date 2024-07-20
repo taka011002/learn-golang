@@ -1,7 +1,7 @@
 package main
 
 import (
-	"learn-golang/graph"
+	"learn-golang/src/graph"
 	"log/slog"
 	"net/http"
 	"os"
