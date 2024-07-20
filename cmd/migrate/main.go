@@ -1,24 +1,22 @@
 package main
 
 import (
-	"database/sql"
+	"learn-golang/src/db"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 func main() {
-	url := "postgres://golang:golang@localhost:5432/golang" // TODO 環境変数から取得する
-	db, err := sql.Open("pgx", url)
-	defer db.Close()
+	d, err := db.NewDb()
+	defer d.Close()
 	if err != nil {
 		panic(err)
 	}
 
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	driver, err := postgres.WithInstance(d, &postgres.Config{})
 	if err != nil {
 		panic(err)
 	}
