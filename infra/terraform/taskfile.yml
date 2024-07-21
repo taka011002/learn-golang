@@ -5,3 +5,6 @@ tasks:
     cmds:
       - terraform fmt
       - terraform validate
+  connect-dev:
+    cmds:
+      - gcloud run services proxy learn-golang
