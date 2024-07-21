@@ -4,7 +4,6 @@ import (
 	"context"
 	"learn-golang/src/db"
 	"learn-golang/src/db/sqlc"
-	"log"
 	"testing"
 	"time"
 
@@ -15,9 +14,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func TestUseCase_CreateUser(t *testing.T) {
-	ctx := context.Background()
-
+func initDbContainer(ctx context.Context) (*db.Config, error) {
 	dbName := "users"
 	dbUser := "user"
 	dbPassword := "password"
@@ -34,24 +31,24 @@ func TestUseCase_CreateUser(t *testing.T) {
 				WithStartupTimeout(5*time.Second)),
 	)
 	if err != nil {
-		log.Fatalf("failed to start container: %s", err)
+		return nil, err
 	}
 
 	// Clean up the container
-	defer func() {
-		if err := postgresContainer.Terminate(ctx); err != nil {
-			log.Fatalf("failed to terminate container: %s", err)
-		}
-	}()
+	//defer func() {
+	//	if err := postgresContainer.Terminate(ctx); err != nil {
+	//		log.Fatalf("failed to terminate container: %s", err)
+	//	}
+	//}()
 
 	host, err := postgresContainer.Host(ctx)
 	if err != nil {
-		log.Fatalf("failed to get container host: %s", err)
+		return nil, err
 	}
 
 	port, err := postgresContainer.MappedPort(ctx, "5432/tcp")
 	if err != nil {
-		log.Fatalf("failed to get container port: %s", err)
+		return nil, err
 	}
 
 	config := db.Config{
@@ -61,20 +58,39 @@ func TestUseCase_CreateUser(t *testing.T) {
 		Password: dbPassword,
 		DbName:   dbName,
 	}
+
+	// DB migrationも実行する
 	err = db.Migrate(&config)
 	if err != nil {
-		log.Fatalf("failed to migrate db: %s", err)
+		return nil, err
 	}
 
+	return &config, nil
+}
+
+func newUseCase(ctx context.Context, config db.Config) (*UseCase, error) {
 	conn, err := db.NewDbClient(ctx, &config)
 	if err != nil {
-		log.Fatalf("failed to connect to db: %s", err)
+		return nil, err
 	}
-	defer conn.Close(ctx)
 	queries := sqlc.New(conn)
+	//defer conn.Close(ctx)
 
 	useCase := UseCase{
 		queries: queries,
+	}
+	return &useCase, nil
+}
+
+func TestUseCase_CreateUser(t *testing.T) {
+	ctx := context.Background()
+	congig, err := initDbContainer(ctx)
+	if err != nil {
+		t.Errorf("failed to init db container: %s", err)
+	}
+	useCase, err := newUseCase(ctx, *congig)
+	if err != nil {
+		t.Errorf("failed to create usecase: %s", err)
 	}
 
 	user, err := useCase.CreateUser(ctx, "test")
