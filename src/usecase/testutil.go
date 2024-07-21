@@ -12,7 +12,7 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func initDbContainer(ctx context.Context) (*db.Config, error) {
+func initDbContainer(t *testing.T, ctx context.Context) (*db.Config, error) {
 	dbName := "users"
 	dbUser := "user"
 	dbPassword := "password"
@@ -31,6 +31,11 @@ func initDbContainer(ctx context.Context) (*db.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	t.Cleanup(func() {
+		if err := postgresContainer.Terminate(ctx); err != nil {
+			t.Fatalf("Could not stop posql: %s", err)
+		}
+	})
 
 	host, err := postgresContainer.Host(ctx)
 	if err != nil {
@@ -64,7 +69,7 @@ func setUpIT(t *testing.T) *UseCase {
 
 	ctx := context.Background()
 
-	config, err := initDbContainer(ctx)
+	config, err := initDbContainer(t, ctx)
 	if err != nil {
 		t.Fatal("failed to initialize db container")
 	}
