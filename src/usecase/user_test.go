@@ -16,7 +16,7 @@ func newUserUseCase(t *testing.T) *userUseCase {
 	}
 }
 
-func TestUseCase_CreateUser(t *testing.T) {
+func TestUserUseCase_CreateUser(t *testing.T) {
 	ctx := context.Background()
 	useCase := newUserUseCase(t)
 
@@ -26,7 +26,7 @@ func TestUseCase_CreateUser(t *testing.T) {
 		wantName string
 	}{
 		{
-			name:     "test",
+			name:     "Success",
 			input:    "test",
 			wantName: "test",
 		},
@@ -45,7 +45,7 @@ func TestUseCase_CreateUser(t *testing.T) {
 	}
 }
 
-func TestUseCase_GetUser(t *testing.T) {
+func TestUserUseCase_GetUser(t *testing.T) {
 	ctx := context.Background()
 	useCase := newUserUseCase(t)
 
