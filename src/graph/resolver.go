@@ -8,10 +8,12 @@ import "learn-golang/src/usecase"
 
 type Resolver struct {
 	userUseCase usecase.UserUseCase
+	postUseCase usecase.PostUseCase
 }
 
-func NewResolver(userUseCase usecase.UserUseCase) *Resolver {
+func NewResolver(userUseCase usecase.UserUseCase, postUseCase usecase.PostUseCase) *Resolver {
 	return &Resolver{
 		userUseCase: userUseCase,
+		postUseCase: postUseCase,
 	}
 }

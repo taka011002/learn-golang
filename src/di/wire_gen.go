@@ -26,7 +26,9 @@ func InitializeResolver(ctx context.Context) (*graph.Resolver, func(), error) {
 	timeGenerator := repository.NewTimeGenerator()
 	userRepository := repository.NewUserRepository(queries, idGenerator, timeGenerator)
 	userUseCase := usecase.NewUserUseCase(userRepository)
-	resolver := graph.NewResolver(userUseCase)
+	postRepository := repository.NewPostRepository(queries, idGenerator, timeGenerator)
+	postUseCase := usecase.NewPostUseCase(postRepository)
+	resolver := graph.NewResolver(userUseCase, postUseCase)
 	return resolver, func() {
 		cleanup()
 	}, nil

@@ -58,7 +58,7 @@ func TestUseCase_GetUser(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateUser() error = %v, want nil", err)
 		}
-		testUsers[i].Id = u.Id
+		testUsers[i].ID = u.ID
 		testUsers[i].CreatedAt = u.CreatedAt
 	}
 
@@ -69,7 +69,7 @@ func TestUseCase_GetUser(t *testing.T) {
 	}{
 		{
 			name:     "success",
-			id:       testUsers[0].Id,
+			id:       testUsers[0].ID,
 			wantName: "test",
 		},
 	}

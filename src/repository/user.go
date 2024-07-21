@@ -33,13 +33,13 @@ func (u *userRepository) GetUser(ctx context.Context, id string) (*model.User, e
 	if err != nil {
 		return nil, err
 	}
-	user, err := u.queries.GetUser(ctx, dbId)
+	user, err := u.queries.GetUserById(ctx, dbId)
 	if err != nil {
 		return nil, err
 	}
 
 	return &model.User{
-		Id:        uuidToString(&user.ID),
+		ID:        uuidToString(&user.ID),
 		Name:      user.Name,
 		CreatedAt: timestampToTime(&user.CreatedAt),
 	}, nil
@@ -61,7 +61,7 @@ func (u *userRepository) CreateUser(ctx context.Context, name string) (*model.Us
 	}
 
 	return &model.User{
-		Id:        uuidToString(&user.ID),
+		ID:        uuidToString(&user.ID),
 		Name:      user.Name,
 		CreatedAt: timestampToTime(&user.CreatedAt),
 	}, nil
