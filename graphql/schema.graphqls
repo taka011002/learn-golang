@@ -189,7 +189,7 @@ type Mutation {
     ): User
 
 
-#    addProjectV2ItemById(
-#        input: AddProjectV2ItemByIdInput!
-#    ): AddProjectV2ItemByIdPayload
+    addProjectV2ItemById(
+        input: AddProjectV2ItemByIdInput!
+    ): AddProjectV2ItemByIdPayload
 }

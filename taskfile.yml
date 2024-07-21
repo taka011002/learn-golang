@@ -5,6 +5,14 @@ tasks:
     cmds:
       - go install github.com/99designs/gqlgen@v0.17.49
       - go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.26.0
+  fmt:
+    cmds:
+      - go fmt ./...
   test:
     cmds:
       - go test -v ./...
+  gen:
+    cmds:
+      - gqlgen generate
+      - sqlc generate
+      - task: fmt

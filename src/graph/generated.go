@@ -75,7 +75,8 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateUser func(childComplexity int, name string) int
+		AddProjectV2ItemByID func(childComplexity int, input model.AddProjectV2ItemByIDInput) int
+		CreateUser           func(childComplexity int, name string) int
 	}
 
 	Node struct {
@@ -178,6 +179,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateUser(ctx context.Context, name string) (*model.User, error)
+	AddProjectV2ItemByID(ctx context.Context, input model.AddProjectV2ItemByIDInput) (*model.AddProjectV2ItemByIDPayload, error)
 }
 type QueryResolver interface {
 	Repository(ctx context.Context, name string, owner string) (*model.Repository, error)
@@ -313,6 +315,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.IssueEdge.Node(childComplexity), true
+
+	case "Mutation.addProjectV2ItemById":
+		if e.complexity.Mutation.AddProjectV2ItemByID == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addProjectV2ItemById_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddProjectV2ItemByID(childComplexity, args["input"].(model.AddProjectV2ItemByIDInput)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -1063,9 +1077,9 @@ type Mutation {
     ): User
 
 
-#    addProjectV2ItemById(
-#        input: AddProjectV2ItemByIdInput!
-#    ): AddProjectV2ItemByIdPayload
+    addProjectV2ItemById(
+        input: AddProjectV2ItemByIdInput!
+    ): AddProjectV2ItemByIdPayload
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -1113,6 +1127,21 @@ func (ec *executionContext) field_Issue_projectItems_args(ctx context.Context, r
 		}
 	}
 	args["last"] = arg3
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addProjectV2ItemById_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.AddProjectV2ItemByIDInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNAddProjectV2ItemByIdInput2learnᚑgolangᚋsrcᚋgraphᚋmodelᚐAddProjectV2ItemByIDInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -2306,6 +2335,62 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_addProjectV2ItemById(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_addProjectV2ItemById(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddProjectV2ItemByID(rctx, fc.Args["input"].(model.AddProjectV2ItemByIDInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.AddProjectV2ItemByIDPayload)
+	fc.Result = res
+	return ec.marshalOAddProjectV2ItemByIdPayload2ᚖlearnᚑgolangᚋsrcᚋgraphᚋmodelᚐAddProjectV2ItemByIDPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_addProjectV2ItemById(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "item":
+				return ec.fieldContext_AddProjectV2ItemByIdPayload_item(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AddProjectV2ItemByIdPayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_addProjectV2ItemById_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7300,6 +7385,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createUser(ctx, field)
 			})
+		case "addProjectV2ItemById":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addProjectV2ItemById(ctx, field)
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8413,6 +8502,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) unmarshalNAddProjectV2ItemByIdInput2learnᚑgolangᚋsrcᚋgraphᚋmodelᚐAddProjectV2ItemByIDInput(ctx context.Context, v interface{}) (model.AddProjectV2ItemByIDInput, error) {
+	res, err := ec.unmarshalInputAddProjectV2ItemByIdInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -8834,6 +8928,13 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalOAddProjectV2ItemByIdPayload2ᚖlearnᚑgolangᚋsrcᚋgraphᚋmodelᚐAddProjectV2ItemByIDPayload(ctx context.Context, sel ast.SelectionSet, v *model.AddProjectV2ItemByIDPayload) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AddProjectV2ItemByIdPayload(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

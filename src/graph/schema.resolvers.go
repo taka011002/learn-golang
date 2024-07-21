@@ -15,6 +15,11 @@ func (r *mutationResolver) CreateUser(ctx context.Context, name string) (*model.
 	return r.useCase.CreateUser(ctx, name)
 }
 
+// AddProjectV2ItemByID is the resolver for the addProjectV2ItemById field.
+func (r *mutationResolver) AddProjectV2ItemByID(ctx context.Context, input model.AddProjectV2ItemByIDInput) (*model.AddProjectV2ItemByIDPayload, error) {
+	panic(fmt.Errorf("not implemented: AddProjectV2ItemByID - addProjectV2ItemById"))
+}
+
 // Repository is the resolver for the repository field.
 func (r *queryResolver) Repository(ctx context.Context, name string, owner string) (*model.Repository, error) {
 	panic(fmt.Errorf("not implemented: Repository - repository"))
