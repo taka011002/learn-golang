@@ -4,13 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"learn-golang/src/db/sqlc"
 	"os"
 
 	"github.com/jackc/pgx/v5"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func NewDbClient(ctx context.Context, c *Config) (*pgx.Conn, func(), error) {
+func newDbClient(ctx context.Context, c *Config) (*pgx.Conn, func(), error) {
 	conn, err := pgx.Connect(ctx, c.toUrl())
 	if err != nil {
 		return nil, nil, err
@@ -19,6 +20,17 @@ func NewDbClient(ctx context.Context, c *Config) (*pgx.Conn, func(), error) {
 	return conn, func() {
 		conn.Close(ctx)
 	}, nil
+}
+
+func NewQueries(ctx context.Context, c *Config) (*sqlc.Queries, func(), error) {
+	conn, cleanup, err := newDbClient(ctx, c)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	queries := sqlc.New(conn)
+	return queries, cleanup, nil
+
 }
 
 func NewDb(c *Config) (*sql.DB, func(), error) {

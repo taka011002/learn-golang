@@ -8,48 +8,16 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Issue struct {
-	ID         pgtype.UUID
-	Url        string
-	Title      string
-	Closed     int32
-	Number     int32
-	Repository pgtype.UUID
-}
-
-type Project struct {
-	ID    pgtype.UUID
-	Title string
-	Url   string
-	Owner pgtype.UUID
-}
-
-type Projectcard struct {
-	ID          pgtype.UUID
-	Project     pgtype.UUID
-	Issue       pgtype.UUID
-	Pullrequest pgtype.UUID
-}
-
-type Pullrequest struct {
-	ID          pgtype.UUID
-	BaseRefName string
-	Closed      int32
-	HeadRefName string
-	Url         string
-	Number      int32
-	Repository  pgtype.UUID
-}
-
-type Repository struct {
+type Post struct {
 	ID        pgtype.UUID
-	Owner     pgtype.UUID
-	Name      string
+	UserID    pgtype.UUID
+	Title     string
+	Content   string
 	CreatedAt pgtype.Timestamp
 }
 
 type User struct {
 	ID        pgtype.UUID
 	Name      string
-	ProjectV2 pgtype.Text
+	CreatedAt pgtype.Timestamp
 }

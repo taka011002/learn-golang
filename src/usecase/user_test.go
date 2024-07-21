@@ -2,14 +2,23 @@ package usecase
 
 import (
 	"context"
+	"learn-golang/src/model"
+	"learn-golang/src/repository"
 	"testing"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
+func newUserUseCase(t *testing.T) *userUseCase {
+	queries := setUpIT(t)
+	return &userUseCase{
+		repo: repository.NewUserRepository(queries, repository.NewUuidGenerator(), repository.NewTimeGenerator()),
+	}
+}
+
 func TestUseCase_CreateUser(t *testing.T) {
 	ctx := context.Background()
-	useCase := setUpIT(t)
+	useCase := newUserUseCase(t)
 
 	cases := []struct {
 		name     string
@@ -17,14 +26,9 @@ func TestUseCase_CreateUser(t *testing.T) {
 		wantName string
 	}{
 		{
-			name:     "Valid user",
+			name:     "test",
 			input:    "test",
 			wantName: "test",
-		},
-		{
-			name:     "Empty user",
-			input:    "",
-			wantName: "",
 		},
 	}
 
@@ -43,37 +47,36 @@ func TestUseCase_CreateUser(t *testing.T) {
 
 func TestUseCase_GetUser(t *testing.T) {
 	ctx := context.Background()
-	useCase := setUpIT(t)
+	useCase := newUserUseCase(t)
 
-	testUsers := []string{"test", "test2"}
-
-	for _, tu := range testUsers {
-		_, err := useCase.CreateUser(ctx, tu)
+	// TODO: IDを動的に決定せず、固定値にしてテストしたい
+	testUsers := []model.User{
+		{Name: "test"},
+	}
+	for i, tu := range testUsers {
+		u, err := useCase.CreateUser(ctx, tu.Name)
 		if err != nil {
 			t.Fatalf("CreateUser() error = %v, want nil", err)
 		}
+		testUsers[i].Id = u.Id
+		testUsers[i].CreatedAt = u.CreatedAt
 	}
 
 	cases := []struct {
 		name     string
-		input    string
+		id       string
 		wantName string
 	}{
 		{
-			name:     "test",
-			input:    "test",
+			name:     "success",
+			id:       testUsers[0].Id,
 			wantName: "test",
-		},
-		{
-			name:     "test2",
-			input:    "test2",
-			wantName: "test2",
 		},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			user, err := useCase.GetUser(ctx, tc.input)
+			user, err := useCase.GetUser(ctx, tc.id)
 			if err != nil {
 				t.Errorf("GetUser() error = %v, want nil", err)
 			}

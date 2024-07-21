@@ -7,11 +7,11 @@ import "learn-golang/src/usecase"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	useCase usecase.UseCase
+	userUseCase usecase.UserUseCase
 }
 
-func NewResolver(useCase usecase.UseCase) *Resolver {
+func NewResolver(userUseCase usecase.UserUseCase) *Resolver {
 	return &Resolver{
-		useCase: useCase,
+		userUseCase: userUseCase,
 	}
 }

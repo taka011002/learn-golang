@@ -12,27 +12,40 @@ import (
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, name string) (*model.User, error) {
-	return r.useCase.CreateUser(ctx, name)
+	user, err := r.userUseCase.CreateUser(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.User{
+		ID:        user.Id,
+		Name:      user.Name,
+		CreatedAt: user.CreatedAt,
+	}, nil
 }
 
-// AddProjectV2ItemByID is the resolver for the addProjectV2ItemById field.
-func (r *mutationResolver) AddProjectV2ItemByID(ctx context.Context, input model.AddProjectV2ItemByIDInput) (*model.AddProjectV2ItemByIDPayload, error) {
-	panic(fmt.Errorf("not implemented: AddProjectV2ItemByID - addProjectV2ItemById"))
-}
-
-// Repository is the resolver for the repository field.
-func (r *queryResolver) Repository(ctx context.Context, name string, owner string) (*model.Repository, error) {
-	panic(fmt.Errorf("not implemented: Repository - repository"))
+// CreatePost is the resolver for the createPost field.
+func (r *mutationResolver) CreatePost(ctx context.Context, title string, content *string, userID string) (*model.Post, error) {
+	panic(fmt.Errorf("not implemented: CreatePost - createPost"))
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, name string) (*model.User, error) {
-	return r.useCase.GetUser(ctx, name)
+func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+	user, err := r.userUseCase.GetUser(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.User{
+		ID:        user.Id,
+		Name:      user.Name,
+		CreatedAt: user.CreatedAt,
+	}, nil
 }
 
-// Node is the resolver for the node field.
-func (r *queryResolver) Node(ctx context.Context, id string) (*model.Node, error) {
-	panic(fmt.Errorf("not implemented: Node - node"))
+// Post is the resolver for the post field.
+func (r *queryResolver) Post(ctx context.Context, id string) (*model.Post, error) {
+	panic(fmt.Errorf("not implemented: Post - post"))
 }
 
 // Mutation returns MutationResolver implementation.
