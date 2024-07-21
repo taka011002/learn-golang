@@ -24,3 +24,9 @@ tasks:
   migrate:
     cmds:
       - go run ./cmd/migrate/main.go
+  push:
+    cmds:
+      - docker build --platform linux/amd64 -t asia-northeast1-docker.pkg.dev/playground-430113/learn-golang/api .
+      - docker push asia-northeast1-docker.pkg.dev/playground-430113/learn-golang/api
+      - docker build --build-arg cmd=cmd/migrate/main.go --platform linux/amd64 -t asia-northeast1-docker.pkg.dev/playground-430113/learn-golang/migrate .
+      - docker push asia-northeast1-docker.pkg.dev/playground-430113/learn-golang/migrate
