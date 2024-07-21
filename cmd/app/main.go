@@ -24,7 +24,8 @@ func main() {
 
 	ctx := context.Background()
 
-	conn, err := db.NewDbClient(ctx)
+	config := db.NewConfig()
+	conn, err := db.NewDbClient(ctx, config)
 	defer conn.Close(ctx)
 	if err != nil {
 		slog.Error("failed to connect to db")

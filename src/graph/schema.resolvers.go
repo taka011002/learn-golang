@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"learn-golang/src/graph/model"
 )
 
@@ -14,9 +15,19 @@ func (r *mutationResolver) CreateUser(ctx context.Context, name string) (*model.
 	return r.useCase.CreateUser(ctx, name)
 }
 
+// Repository is the resolver for the repository field.
+func (r *queryResolver) Repository(ctx context.Context, name string, owner string) (*model.Repository, error) {
+	panic(fmt.Errorf("not implemented: Repository - repository"))
+}
+
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, name string) (*model.User, error) {
 	return r.useCase.GetUser(ctx, name)
+}
+
+// Node is the resolver for the node field.
+func (r *queryResolver) Node(ctx context.Context, id string) (*model.Node, error) {
+	panic(fmt.Errorf("not implemented: Node - node"))
 }
 
 // Mutation returns MutationResolver implementation.
