@@ -25,12 +25,12 @@ func main() {
 	ctx := context.Background()
 
 	config := db.NewConfig()
-	conn, err := db.NewDbClient(ctx, config)
-	defer conn.Close(ctx)
+	conn, cleanup, err := db.NewDbClient(ctx, config)
 	if err != nil {
 		slog.Error("failed to connect to db")
 		return
 	}
+	defer cleanup()
 	queries := sqlc.New(conn)
 	useCase := usecase.NewUseCase(queries)
 

@@ -10,12 +10,26 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func NewDbClient(ctx context.Context, c *Config) (*pgx.Conn, error) {
-	return pgx.Connect(ctx, c.toUrl())
+func NewDbClient(ctx context.Context, c *Config) (*pgx.Conn, func(), error) {
+	conn, err := pgx.Connect(ctx, c.toUrl())
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return conn, func() {
+		conn.Close(ctx)
+	}, nil
 }
 
-func NewDb(c *Config) (*sql.DB, error) {
-	return sql.Open("pgx", c.toUrl())
+func NewDb(c *Config) (*sql.DB, func(), error) {
+	db, err := sql.Open("pgx", c.toUrl())
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return db, func() {
+		db.Close()
+	}, nil
 }
 
 type Config struct {

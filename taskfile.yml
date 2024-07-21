@@ -16,3 +16,9 @@ tasks:
       - gqlgen generate
       - sqlc generate
       - task: fmt
+  run:
+    cmds:
+      - go run ./cmd/app/main.go
+  migrate:
+    cmds:
+      - go run ./cmd/migrate/main.go

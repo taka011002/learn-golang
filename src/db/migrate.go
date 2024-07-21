@@ -11,11 +11,11 @@ import (
 )
 
 func Migrate(config *Config) error {
-	d, err := NewDb(config)
-	defer d.Close()
+	d, cleanup, err := NewDb(config)
 	if err != nil {
 		return err
 	}
+	defer cleanup()
 
 	driver, err := postgres.WithInstance(d, &postgres.Config{})
 	if err != nil {
