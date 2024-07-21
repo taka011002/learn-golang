@@ -64,7 +64,7 @@ func initDbContainer(t *testing.T, ctx context.Context) (*db.Config, error) {
 	return &config, nil
 }
 
-func setUpIT(t *testing.T) *UseCase {
+func setUpIT(t *testing.T) *sqlc.Queries {
 	t.Helper()
 
 	ctx := context.Background()
@@ -74,16 +74,11 @@ func setUpIT(t *testing.T) *UseCase {
 		t.Fatal("failed to initialize db container")
 	}
 
-	conn, cleanup, err := db.NewDbClient(ctx, config)
+	queries, cleanup, err := db.NewQueries(ctx, config)
 	if err != nil {
 		t.Fatal("failed to connect db")
 	}
 	t.Cleanup(cleanup)
 
-	queries := sqlc.New(conn)
-	useCase := UseCase{
-		queries: queries,
-	}
-
-	return &useCase
+	return queries
 }

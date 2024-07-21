@@ -12,29 +12,29 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, name, project_v2) VALUES ($1, $2, $3) RETURNING id, name, project_v2
+INSERT INTO users (id, name, created_at) VALUES ($1, $2, $3) RETURNING id, name, created_at
 `
 
 type CreateUserParams struct {
 	ID        pgtype.UUID
 	Name      string
-	ProjectV2 pgtype.Text
+	CreatedAt pgtype.Timestamp
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.ID, arg.Name, arg.ProjectV2)
+	row := q.db.QueryRow(ctx, createUser, arg.ID, arg.Name, arg.CreatedAt)
 	var i User
-	err := row.Scan(&i.ID, &i.Name, &i.ProjectV2)
+	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, project_v2 FROM users WHERE name = $1 LIMIT 1
+SELECT id, name, created_at FROM users WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetUser(ctx context.Context, name string) (User, error) {
-	row := q.db.QueryRow(ctx, getUser, name)
+func (q *Queries) GetUser(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUser, id)
 	var i User
-	err := row.Scan(&i.ID, &i.Name, &i.ProjectV2)
+	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err
 }

@@ -2,10 +2,8 @@ package main
 
 import (
 	"context"
-	"learn-golang/src/db"
-	"learn-golang/src/db/sqlc"
+	"learn-golang/src/di"
 	"learn-golang/src/graph"
-	"learn-golang/src/usecase"
 	"log/slog"
 	"net/http"
 	"os"
@@ -23,18 +21,10 @@ func main() {
 	}
 
 	ctx := context.Background()
-
-	config := db.NewConfig()
-	conn, cleanup, err := db.NewDbClient(ctx, config)
-	if err != nil {
-		slog.Error("failed to connect to db")
-		return
-	}
+	resolver, cleanup, err := di.InitializeResolver(ctx)
 	defer cleanup()
-	queries := sqlc.New(conn)
-	useCase := usecase.NewUseCase(queries)
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(*useCase)}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: resolver}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)

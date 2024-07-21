@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.49
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/google/uuid v1.6.0
+	github.com/google/wire v0.6.0
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/testcontainers/testcontainers-go v0.32.0
 	github.com/testcontainers/testcontainers-go/modules/postgres v0.32.0
