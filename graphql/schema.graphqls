@@ -33,6 +33,5 @@ type Mutation {
     createPost(
         title: String!
         content: String
-        userId: String!
     ): Post
 }

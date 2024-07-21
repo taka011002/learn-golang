@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"learn-golang/src/graph/model"
 )
 
@@ -18,15 +17,26 @@ func (r *mutationResolver) CreateUser(ctx context.Context, name string) (*model.
 	}
 
 	return &model.User{
-		ID:        user.Id,
+		ID:        user.ID,
 		Name:      user.Name,
 		CreatedAt: user.CreatedAt,
 	}, nil
 }
 
 // CreatePost is the resolver for the createPost field.
-func (r *mutationResolver) CreatePost(ctx context.Context, title string, content *string, userID string) (*model.Post, error) {
-	panic(fmt.Errorf("not implemented: CreatePost - createPost"))
+func (r *mutationResolver) CreatePost(ctx context.Context, title string, content *string) (*model.Post, error) {
+	post, err := r.postUseCase.CreatePost(ctx, title, content)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Post{
+		ID:        post.ID,
+		UserID:    post.UserID,
+		Title:     post.Title,
+		Content:   post.Content,
+		CreatedAt: post.CreatedAt,
+	}, nil
 }
 
 // User is the resolver for the user field.
@@ -37,7 +47,7 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 	}
 
 	return &model.User{
-		ID:        user.Id,
+		ID:        user.ID,
 		Name:      user.Name,
 		CreatedAt: user.CreatedAt,
 	}, nil
@@ -45,7 +55,18 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 
 // Post is the resolver for the post field.
 func (r *queryResolver) Post(ctx context.Context, id string) (*model.Post, error) {
-	panic(fmt.Errorf("not implemented: Post - post"))
+	post, err := r.postUseCase.GetPost(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Post{
+		ID:        post.ID,
+		UserID:    post.UserID,
+		Title:     post.Title,
+		Content:   post.Content,
+		CreatedAt: post.CreatedAt,
+	}, nil
 }
 
 // Mutation returns MutationResolver implementation.

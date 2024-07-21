@@ -29,11 +29,22 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUser = `-- name: GetUser :one
+SELECT id, name, created_at FROM users LIMIT 1
+`
+
+func (q *Queries) GetUser(ctx context.Context) (User, error) {
+	row := q.db.QueryRow(ctx, getUser)
+	var i User
+	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
 SELECT id, name, created_at FROM users WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetUser(ctx context.Context, id pgtype.UUID) (User, error) {
-	row := q.db.QueryRow(ctx, getUser, id)
+func (q *Queries) GetUserById(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
 	var i User
 	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err

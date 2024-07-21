@@ -17,7 +17,9 @@ func InitializeResolver(ctx context.Context) (*graph.Resolver, func(), error) {
 	wire.Build(
 		graph.NewResolver,
 		repository.NewUserRepository,
+		repository.NewPostRepository,
 		usecase.NewUserUseCase,
+		usecase.NewPostUseCase,
 		repository.NewTimeGenerator,
 		repository.NewUuidGenerator,
 		db.NewConfig,

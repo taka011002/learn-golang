@@ -6,8 +6,8 @@ import (
 
 type Post struct {
 	ID        string
-	UserId    string
+	UserID    string
 	Title     string
-	Content   string
+	Content   *string
 	CreatedAt time.Time
 }

@@ -48,7 +48,7 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CreatePost func(childComplexity int, title string, content *string, userID string) int
+		CreatePost func(childComplexity int, title string, content *string) int
 		CreateUser func(childComplexity int, name string) int
 	}
 
@@ -74,7 +74,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateUser(ctx context.Context, name string) (*model.User, error)
-	CreatePost(ctx context.Context, title string, content *string, userID string) (*model.Post, error)
+	CreatePost(ctx context.Context, title string, content *string) (*model.Post, error)
 }
 type QueryResolver interface {
 	User(ctx context.Context, id string) (*model.User, error)
@@ -110,7 +110,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreatePost(childComplexity, args["title"].(string), args["content"].(*string), args["userId"].(string)), true
+		return e.complexity.Mutation.CreatePost(childComplexity, args["title"].(string), args["content"].(*string)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -343,7 +343,6 @@ type Mutation {
     createPost(
         title: String!
         content: String
-        userId: String!
     ): Post
 }`, BuiltIn: false},
 }
@@ -374,15 +373,6 @@ func (ec *executionContext) field_Mutation_createPost_args(ctx context.Context, 
 		}
 	}
 	args["content"] = arg1
-	var arg2 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg2, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg2
 	return args, nil
 }
 
@@ -558,7 +548,7 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreatePost(rctx, fc.Args["title"].(string), fc.Args["content"].(*string), fc.Args["userId"].(string))
+		return ec.resolvers.Mutation().CreatePost(rctx, fc.Args["title"].(string), fc.Args["content"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
