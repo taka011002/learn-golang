@@ -9,8 +9,6 @@ terraform {
 
 provider "google" {
   project = var.project
-}
-
-resource "google_compute_network" "vpc_network" {
-  name = "terraform-network"
+  region  = var.region
+  zone    = var.zone
 }
