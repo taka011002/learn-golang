@@ -72,5 +72,6 @@ func NewConfig() *Config {
 }
 
 func (c *Config) toUrl() string {
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s", c.User, c.Password, c.Host, c.Port, c.DbName)
+	return fmt.Sprintf("host=%s user=%s password=%s port=%s database=%s",
+		c.Host, c.User, c.Password, c.Port, c.DbName)
 }

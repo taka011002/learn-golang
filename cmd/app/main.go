@@ -22,6 +22,10 @@ func main() {
 
 	ctx := context.Background()
 	resolver, cleanup, err := di.InitializeResolver(ctx)
+	if err != nil {
+		slog.Error(err.Error())
+		return
+	}
 	defer cleanup()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: resolver}))
