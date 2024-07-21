@@ -1,0 +1,5 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'asia-northeast1-docker.pkg.dev/playground-430113/learn-golang', '.' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'asia-northeast1-docker.pkg.dev/playground-430113/learn-golang' ]
